@@ -1,0 +1,6 @@
+flask
+transformers
+torch
+PyMuPDF
+python-docx
+nltk

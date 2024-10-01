@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Summarizer</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center mt-5">Document Summarizer</h1>
+        <form action="/summarize" method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="file">Upload Document (PDF, DOCX, TXT)</label>
+                <input type="file" class="form-control" id="file" name="file">
+            </div>
+            <h4 class="text-center">OR</h4>
+            <div class="form-group">
+                <label for="text">Enter/Paste Text</label>
+                <textarea class="form-control" id="text" name="text" rows="10" placeholder="Type or paste your text here..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Summarize</button>
+        </form>
+    </div>
+</body>
+</html>
