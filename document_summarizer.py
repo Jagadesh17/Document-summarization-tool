@@ -35,29 +35,22 @@ def vectorize_sentences(sentences):
     return X, vectorizer
 
 def build_hmm_model(X):
-    # Create and train the HMM model
     model = hmm.GaussianHMM(n_components=5, covariance_type='diag', n_iter=1000, random_state=42)
     model.fit(X.toarray())
     return model
 
 def score_sentences(sentences, model, X):
-    # Score each sentence using the HMM model
     _, frame_log_likelihoods = model.score_samples(X.toarray())
     
-    # Average the log likelihoods for each sentence
     avg_log_likelihoods = np.mean(frame_log_likelihoods, axis=1)
     return list(zip(sentences, avg_log_likelihoods))
 
 def summarize_text(text, max_length=150, min_length=30):
-    # Initialize summarization pipeline
     summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
-
-    # Split text into chunks if it's too long
     chunks = [text[i:i + 1000] for i in range(0, len(text), 1000)]
     
     summaries = []
     for chunk in chunks:
-        # Adjust max_length based on the length of each chunk
         adjusted_max_length = min(max_length, max(len(chunk) // 2, min_length))
         summary = summarizer(chunk, max_length=adjusted_max_length, min_length=min_length)[0]['summary_text']
         summaries.append(summary)
@@ -65,7 +58,6 @@ def summarize_text(text, max_length=150, min_length=30):
     return ' '.join(summaries)
 
 def summarize_document(file_path):
-    # Extract text based on file extension
     if file_path.endswith('.pdf'):
         text = extract_text_from_pdf(file_path)
     elif file_path.endswith('.docx'):
@@ -75,18 +67,14 @@ def summarize_document(file_path):
     else:
         raise ValueError("Unsupported file format")
 
-    # Preprocess and vectorize text
     sentences = preprocess_text(text)
     X, vectorizer = vectorize_sentences(sentences)
 
-    # Build and apply HMM model
     model = build_hmm_model(X)
     scored_sentences = score_sentences(sentences, model, X)
 
-    # Select top sentences based on HMM scores
     top_sentences = [sentence for sentence, score in sorted(scored_sentences, key=lambda x: x[1], reverse=True)[:10]]
 
-    # Summarize the selected sentences
     summary = summarize_text(' '.join(top_sentences))
 
     return summary
